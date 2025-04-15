@@ -4,6 +4,7 @@ const videoSchema = new mongoose.Schema({
   videoId: String,
   title: String,
   thumbnailUrl: String,
+  videoUrl: String,
   description: String,
   channelId: String,
   uploader: String,
