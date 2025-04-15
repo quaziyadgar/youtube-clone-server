@@ -5,6 +5,7 @@ import videoRoutes from './routes/videos.js';
 import authRoutes from './routes/auth.js';
 import channelRoutes from './routes/channels.js';
 import dotenv from 'dotenv';
+import { initGridFS } from './utils/gridfs.js';
 
 dotenv.config();
 
@@ -17,7 +18,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/channels', channelRoutes);
 
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB Atlas connected'))
+  .then(() => {console.log('MongoDB Atlas connected'); initGridFS()})
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // const PORT = process.env.PORT || 5000;
