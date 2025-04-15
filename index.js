@@ -3,6 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import videoRoutes from './routes/videos.js';
 import authRoutes from './routes/auth.js';
+import channelRoutes from './routes/channels.js';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use('/api/videos', videoRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api/channels', channelRoutes);
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => console.log('MongoDB Atlas connected'))

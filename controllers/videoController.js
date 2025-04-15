@@ -1,4 +1,5 @@
 import Video from '../models/Video.js';
+import Channel from '../models/Channel.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export const getAllVideos = async (req, res) => {
@@ -16,6 +17,8 @@ export const getVideo = async (req, res) => {
     if (!video) {
       return res.status(404).json({ error: 'Video not found' });
     }
+    video.views += 1;
+    await video.save();
     res.json(video);
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
@@ -39,6 +42,11 @@ export const createVideo = async (req, res) => {
       comments: [],
     });
     await video.save();
+    const channel = await Channel.findOne({ channelId });
+    if (channel && channel.owner === req.userId) {
+      channel.videos.push(video._id);
+      await channel.save();
+    }
     res.status(201).json(video);
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
@@ -57,8 +65,8 @@ export const updateVideo = async (req, res) => {
     }
     video.title = title || video.title;
     video.description = description || video.description;
-    video.likes = likes !== undefined ? likes : video.likes;
-    video.dislikes = dislikes !== undefined ? dislikes : video.dislikes;
+    if (likes !== undefined) video.likes += likes;
+    if (dislikes !== undefined) video.dislikes += dislikes;
     await video.save();
     res.json(video);
   } catch (error) {
@@ -76,6 +84,11 @@ export const deleteVideo = async (req, res) => {
       return res.status(403).json({ error: 'Unauthorized' });
     }
     await video.deleteOne();
+    const channel = await Channel.findOne({ channelId: video.channelId });
+    if (channel) {
+      channel.videos = channel.videos.filter((vid) => vid.toString() !== video._id.toString());
+      await channel.save();
+    }
     res.json({ message: 'Video deleted' });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
