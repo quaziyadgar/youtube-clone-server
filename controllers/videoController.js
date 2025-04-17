@@ -1,17 +1,18 @@
 import Video from '../models/Video.js';
 import Channel from '../models/Channel.js';
 import { v4 as uuidv4 } from 'uuid';
+import mongoose from 'mongoose';
 
-export const getAllVideos = async (req, res) => {
+export const getAllVideos = async (req, res, next) => {
   try {
     const videos = await Video.find();
     res.json(videos);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    next(error);
   }
 };
 
-export const getVideo = async (req, res) => {
+export const getVideo = async (req, res, next) => {
   try {
     const video = await Video.findOne({ videoId: req.params.videoId });
     if (!video) {
@@ -21,20 +22,24 @@ export const getVideo = async (req, res) => {
     await video.save();
     res.json(video);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    next(error);
   }
 };
 
-export const createVideo = async (req, res) => {
-  const { title, thumbnailUrl, description, channelId } = req.body;
+export const createVideo = async (req, res, next) => {
+  const { title, description, channelId, videoUrl } = req.body;
   try {
+    if (!videoUrl) {
+      return res.status(400).json({ error: 'Video URL required' });
+    }
     const video = new Video({
       videoId: uuidv4(),
       title,
-      thumbnailUrl,
+      thumbnailUrl: `https://img.youtube.com/vi/${videoUrl.split('v=')[1]}/0.jpg`,
       description,
       channelId,
       uploader: req.userId,
+      videoUrl,
       views: 0,
       likes: 0,
       dislikes: 0,
@@ -49,12 +54,24 @@ export const createVideo = async (req, res) => {
     }
     res.status(201).json(video);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    next(error);
   }
 };
 
-export const updateVideo = async (req, res) => {
-  const { title, description, likes, dislikes } = req.body;
+export const streamVideo = async (req, res, next) => {
+  try {
+    const video = await Video.findOne({ videoId: req.params.videoId });
+    if (!video || !video.videoUrl) {
+      return res.status(404).json({ error: 'Video not found' });
+    }
+    res.redirect(video.videoUrl);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateVideo = async (req, res, next) => {
+  const { title, description, likes, dislikes, videoUrl } = req.body;
   try {
     const video = await Video.findOne({ videoId: req.params.videoId });
     if (!video) {
@@ -65,16 +82,17 @@ export const updateVideo = async (req, res) => {
     }
     video.title = title || video.title;
     video.description = description || video.description;
+    video.videoUrl = videoUrl || video.videoUrl;
     if (likes !== undefined) video.likes += likes;
     if (dislikes !== undefined) video.dislikes += dislikes;
     await video.save();
     res.json(video);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    next(error);
   }
 };
 
-export const deleteVideo = async (req, res) => {
+export const deleteVideo = async (req, res, next) => {
   try {
     const video = await Video.findOne({ videoId: req.params.videoId });
     if (!video) {
@@ -91,11 +109,11 @@ export const deleteVideo = async (req, res) => {
     }
     res.json({ message: 'Video deleted' });
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    next(error);
   }
 };
 
-export const addComment = async (req, res) => {
+export const addComment = async (req, res, next) => {
   const { text } = req.body;
   try {
     const video = await Video.findOne({ videoId: req.params.videoId });
@@ -108,10 +126,11 @@ export const addComment = async (req, res) => {
       text,
       timestamp: new Date(),
     };
+    video.comments = video.comments || [];
     video.comments.push(comment);
     await video.save();
     res.status(201).json(comment);
   } catch (error) {
-    res.status(500).json({ error: 'Server error' });
+    next(error);
   }
 };

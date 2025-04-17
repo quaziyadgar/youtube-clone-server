@@ -25,21 +25,21 @@ const channels = [
 ];
 
 const videoTemplates = [
-  { title: 'React Hooks Tutorial', description: 'Learn React Hooks in 10 minutes!', category: 'Tech', urlId: 'dQw4w9WgXcQ' },
-  { title: 'Node.js Crash Course', description: 'Build a REST API with Express.', category: 'Tech', urlId: 'k_2Zzv7sE5A' },
-  { title: 'Morning Routine Vlog', description: 'Start your day with me!', category: 'Vlog', urlId: 'a1b2c3d4e5f6' },
-  { title: 'Epic Gaming Montage', description: 'Best moments from my streams.', category: 'Gaming', urlId: 'g7h8i9j0k1l2' },
-  { title: 'Guitar Cover - Pop Hits', description: 'Acoustic covers of your favorites.', category: 'Music', urlId: 'm3n4o5p6q7r8' },
-  { title: 'DIY Home Decor', description: 'Make your space cozy on a budget.', category: 'DIY', urlId: 's9t0u1v2w3x4' },
-  { title: 'Paris Travel Guide', description: 'Top spots to visit in Paris.', category: 'Travel', urlId: 'y5z6a7b8c9d0' },
-  { title: 'Easy Pasta Recipe', description: 'Delicious dinner in 15 minutes.', category: 'Food', urlId: 'e1f2g3h4i5j6' },
-  { title: 'HIIT Workout Plan', description: 'Burn calories in 20 minutes.', category: 'Fitness', urlId: 'k7l8m9n0o1p2' },
-  { title: 'Watercolor Painting Tips', description: 'Master the art of watercolor.', category: 'Art', urlId: 'q3r4s5t6u7v8' },
-  { title: 'Quantum Physics Explained', description: 'Simplify complex concepts.', category: 'Science', urlId: 'w9x0y1z2a3b4' },
-  { title: 'World War II Facts', description: 'Key events you should know.', category: 'History', urlId: 'c5d6e7f8g9h0' },
-  { title: 'Wildlife Safari Adventure', description: 'Explore nature’s wonders.', category: 'Nature', urlId: 'i1j2k3l4m5n6' },
-  { title: 'Stand-Up Comedy Routine', description: 'Laugh out loud with me!', category: 'Comedy', urlId: 'o7p8q9r0s1t2' },
-  { title: 'Overcoming Fear', description: 'Life advice for confidence.', category: 'Life', urlId: 'u3v4w5x6y7z8' },
+  { title: 'React Hooks Tutorial', description: 'Learn React Hooks in 10 minutes!', category: 'Tech', videoUrl: 'https://www.youtube.com/watch?v=TNhaISOUy6Q' },
+  { title: 'Node.js Crash Course', description: 'Build a REST API with Express.', category: 'Tech', videoUrl: 'https://www.youtube.com/watch?v=fBNz5xF-Kx4' },
+  { title: 'Morning Routine Vlog', description: 'Start your day with me!', category: 'Vlog', videoUrl: 'https://www.youtube.com/watch?v=5AyhS1vC1wo' },
+  { title: 'Epic Gaming Montage', description: 'Best moments from my streams.', category: 'Gaming', videoUrl: 'https://www.youtube.com/watch?v=3b2rBx2l2vA' },
+  { title: 'Guitar Cover - Pop Hits', description: 'Acoustic covers of your favorites.', category: 'Music', videoUrl: 'https://www.youtube.com/watch?v=0I647GU3Jsc' },
+  { title: 'DIY Home Decor', description: 'Make your space cozy on a budget.', category: 'DIY', videoUrl: 'https://www.youtube.com/watch?v=Z7zngqaWJ4I' },
+  { title: 'Paris Travel Guide', description: 'Top spots to visit in Paris.', category: 'Travel', videoUrl: 'https://www.youtube.com/watch?v=AKeYvGykJsc' },
+  { title: 'Easy Pasta Recipe', description: 'Delicious dinner in 15 minutes.', category: 'Food', videoUrl: 'https://www.youtube.com/watch?v=OTDnv1TfJ6w' },
+  { title: 'HIIT Workout Plan', description: 'Burn calories in 20 minutes.', category: 'Fitness', videoUrl: 'https://www.youtube.com/watch?v=ml6N-4Kq39A' },
+  { title: 'Watercolor Painting Tips', description: 'Master the art of watercolor.', category: 'Art', videoUrl: 'https://www.youtube.com/watch?v=6iEFGxwF5pI' },
+  { title: 'Quantum Physics Explained', description: 'Simplify complex concepts.', category: 'Science', videoUrl: 'https://www.youtube.com/watch?v=Usu9xZfabPM' },
+  { title: 'World War II Facts', description: 'Key events you should know.', category: 'History', videoUrl: 'https://www.youtube.com/watch?v=HZsIgu8Sg9s' },
+  { title: 'Wildlife Safari Adventure', description: 'Explore nature’s wonders.', category: 'Nature', videoUrl: 'https://www.youtube.com/watch?v=7X0hO9Frr1o' },
+  { title: 'Stand-Up Comedy Routine', description: 'Laugh out loud with me!', category: 'Comedy', videoUrl: 'https://www.youtube.com/watch?v=8gpjk_MaCGM' },
+  { title: 'Overcoming Fear', description: 'Life advice for confidence.', category: 'Life', videoUrl: 'https://www.youtube.com/watch?v=2yq5O8x4q0g' },
 ];
 
 const generateVideos = () => {
@@ -50,18 +50,17 @@ const generateVideos = () => {
     channels.forEach((channel) => {
       if (videoCount >= 100) return;
 
-      // Assign 5-10 videos per channel
       const videosPerChannel = Math.floor(Math.random() * 6) + 5;
       for (let i = 0; i < videosPerChannel && videoCount < 100; i++) {
         const template = videoTemplates[Math.floor(Math.random() * videoTemplates.length)];
         videos.push({
           videoId: uuidv4(),
           title: `${template.title} ${videoCount + 1}`,
-          thumbnailUrl: `https://via.placeholder.com/150?text=${encodeURIComponent(template.title)}`,
+          thumbnailUrl: `https://img.youtube.com/vi/${template.videoUrl.split('v=')[1]}/0.jpg`,
           description: template.description,
           channelId: channel.channelId,
           uploader: channel.owner,
-          videoUrl: `https://www.youtube.com/watch?v=${template.urlId}_${videoCount}`,
+          videoUrl: template.videoUrl,
           views: Math.floor(Math.random() * 10000),
           likes: Math.floor(Math.random() * 500),
           dislikes: Math.floor(Math.random() * 50),
@@ -88,21 +87,17 @@ const seedDatabase = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('MongoDB Atlas connected');
 
-    // Clear existing data
     await Video.deleteMany({});
     await Channel.deleteMany({});
     console.log('Cleared existing videos and channels');
 
-    // Insert channels
     await Channel.insertMany(channels);
     console.log('Seeded channels');
 
-    // Insert videos
     const videos = generateVideos();
     await Video.insertMany(videos);
     console.log('Seeded 100 videos');
 
-    // Update channels with video references
     for (const channel of channels) {
       const channelVideos = videos
         .filter((v) => v.channelId === channel.channelId)
