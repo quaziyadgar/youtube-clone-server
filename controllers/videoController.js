@@ -5,7 +5,18 @@ import mongoose from 'mongoose';
 
 export const getAllVideos = async (req, res, next) => {
   try {
-    const videos = await Video.find();
+    const { search } = req.query;
+    let videos;
+    if (search) {
+      videos = await Video.find({
+        $or: [
+          { title: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } },
+        ],
+      });
+    } else {
+      videos = await Video.find();
+    }
     res.json(videos);
   } catch (error) {
     next(error);
