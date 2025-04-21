@@ -145,3 +145,48 @@ export const addComment = async (req, res, next) => {
     next(error);
   }
 };
+
+
+export const editComment = async (req, res, next) => {
+  const { text } = req.body;
+  try {
+    const video = await Video.findOne({ videoId: req.params.videoId });
+    if (!video) {
+      return res.status(404).json({ error: 'Video not found' });
+    }
+    const comment = video.comments.find(c => c.commentId === req.params.commentId);
+    if (!comment) {
+      return res.status(404).json({ error: 'Comment not found' });
+    }
+    if (comment.userId !== req.userId) {
+      return res.status(403).json({ error: 'Unauthorized to edit comment' });
+    }
+    comment.text = text;
+    comment.timestamp = new Date();
+    await video.save();
+    res.status(200).json(comment);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteComment = async (req, res, next) => {
+  try {
+    const video = await Video.findOne({ videoId: req.params.videoId });
+    if (!video) {
+      return res.status(404).json({ error: 'Video not found' });
+    }
+    const commentIndex = video.comments.findIndex(c => c.commentId === req.params.commentId);
+    if (commentIndex === -1) {
+      return res.status(404).json({ error: 'Comment not found' });
+    }
+    if (video.comments[commentIndex].userId !== req.userId) {
+      return res.status(403).json({ error: 'Unauthorized to delete comment' });
+    }
+    video.comments.splice(commentIndex, 1);
+    await video.save();
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+};
