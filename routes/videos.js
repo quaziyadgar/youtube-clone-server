@@ -6,6 +6,8 @@ import {
   updateVideo,
   deleteVideo,
   addComment,
+  editComment,
+  deleteComment
 } from '../controllers/videoController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 
@@ -17,7 +19,7 @@ router.post('/', authMiddleware, createVideo);
 router.put('/:videoId', authMiddleware, updateVideo);
 router.delete('/:videoId', authMiddleware, deleteVideo);
 router.post('/:videoId/comments', authMiddleware, addComment);
-router.put('/:videoId/comments/:commentId', auth, editComment);
-router.delete('/:videoId/comments/:commentId', auth, deleteComment);
+router.put('/:videoId/comments/:commentId', authMiddleware, editComment);
+router.delete('/:videoId/comments/:commentId', authMiddleware, deleteComment);
 
 export default router;
