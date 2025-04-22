@@ -1,5 +1,4 @@
 import Channel from '../models/Channel.js';
-import Video from '../models/Video.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export const getChannel = async (req, res) => {
