@@ -1,7 +1,6 @@
 import Video from '../models/Video.js';
 import Channel from '../models/Channel.js';
 import { v4 as uuidv4 } from 'uuid';
-import mongoose from 'mongoose';
 
 export const getAllVideos = async (req, res, next) => {
   try {
