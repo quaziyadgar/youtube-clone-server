@@ -38,3 +38,12 @@ export const createChannel = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+export const getChannels = async (req, res) => {
+  try {
+    const channels = await Channel.find({ owner: req.userId }).select('channelId name');
+    res.json(channels);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+};
