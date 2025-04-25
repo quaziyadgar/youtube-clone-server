@@ -190,3 +190,51 @@ export const deleteComment = async (req, res, next) => {
     next(error);
   }
 };
+
+// Like a video
+export const likeVideo = async (req, res) => {
+  try {
+    const video = await Video.findById(req.params.videoId);
+    if (!video) {
+      return res.status(404).json({ error: 'Video not found' });
+    }
+    const userId = req.userId;
+    if (video.dislikes.includes(userId)) {
+      video.dislikes.pull(userId);
+    }
+    if (!video.likes.includes(userId)) {
+      video.likes.push(userId);
+    } else {
+      video.likes.pull(userId);
+    }
+    await video.save();
+    res.json(video);
+  } catch (error) {
+    console.error('Like video error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+// Dislike a video
+export const dislikeVideo = async (req, res) => {
+  try {
+    const video = await Video.findById(req.params.videoId);
+    if (!video) {
+      return res.status(404).json({ error: 'Video not found' });
+    }
+    const userId = req.userId;
+    if (video.likes.includes(userId)) {
+      video.likes.pull(userId);
+    }
+    if (!video.dislikes.includes(userId)) {
+      video.dislikes.push(userId);
+    } else {
+      video.dislikes.pull(userId);
+    }
+    await video.save();
+    res.json(video);
+  } catch (error) {
+    console.error('Dislike video error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+};

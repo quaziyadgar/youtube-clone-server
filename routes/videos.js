@@ -7,9 +7,11 @@ import {
   deleteVideo,
   addComment,
   editComment,
-  deleteComment
+  deleteComment,
+  likeVideo,
+  dislikeVideo
 } from '../controllers/videoController.js';
-import authMiddleware from '../middleware/authMiddleware.js';
+import { authMiddleware } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -21,5 +23,7 @@ router.delete('/:videoId', authMiddleware, deleteVideo);
 router.post('/:videoId/comments', authMiddleware, addComment);
 router.put('/:videoId/comments/:commentId', authMiddleware, editComment);
 router.delete('/:videoId/comments/:commentId', authMiddleware, deleteComment);
+router.post('/:videoId/like', authMiddleware, likeVideo);
+router.post('/:videoId/dislike', authMiddleware, dislikeVideo);
 
 export default router;
