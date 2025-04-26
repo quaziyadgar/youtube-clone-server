@@ -9,8 +9,8 @@ const videoSchema = new mongoose.Schema({
   channelId: String,
   uploader: String,
   views: Number,
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
-  dislikes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  likes: Number,
+  dislikes: Number,
   uploadDate: Date,
   comments: [{
     commentId: String,
