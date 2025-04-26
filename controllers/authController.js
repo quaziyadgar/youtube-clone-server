@@ -36,6 +36,7 @@ export const login = async (req, res) => {
   const { email, password } = req.body;
   try {
     const user = await User.findOne({ email });
+    console.log(user);
     if (!user) {
       return res.status(400).json({ error: 'Invalid credentials' });
     }
@@ -45,7 +46,7 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: user._id, username: user.username, email: user.email },
+      { userId: user.id, username: user.username, email: user.email },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
@@ -53,7 +54,7 @@ export const login = async (req, res) => {
     res.json({
       token,
       user: {
-        id: user._id,
+        id: user.id,
         username: user.username,
         email: user.email
       }
