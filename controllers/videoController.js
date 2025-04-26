@@ -92,6 +92,7 @@ export const updateVideo = async (req, res, next) => {
     }
     video.title = title || video.title;
     video.description = description || video.description;
+    video.thumbnailUrl = `https://img.youtube.com/vi/${videoUrl.split('v=')[1]}/0.jpg`,
     video.videoUrl = videoUrl || video.videoUrl;
     if (likes !== undefined) video.likes += likes;
     if (dislikes !== undefined) video.dislikes += dislikes;
