@@ -194,47 +194,73 @@ export const deleteComment = async (req, res, next) => {
 // Like a video
 export const likeVideo = async (req, res) => {
   try {
-    const video = await Video.findById(req.params.videoId);
+    const video = await Video.findOne({ videoId: req.params.videoId });
     if (!video) {
       return res.status(404).json({ error: 'Video not found' });
     }
     const userId = req.userId;
-    if (video.dislikes?.includes(userId)) {
-      video.dislikes?.pull(userId);
+    video.likes = video.likes || [];
+    video.dislikes = video.dislikes || [];
+    if (video.dislikes.includes(userId)) {
+      video.dislikes.pull(userId);
     }
     if (!video.likes.includes(userId)) {
-      video.likes?.push(userId);
+      video.likes.push(userId);
     } else {
-      video.likes?.pull(userId);
+      video.likes.pull(userId);
     }
     await video.save();
-    res.json(video);
+    res.json({
+      videoId: video.videoId,
+      likes: video.likes,
+      dislikes: video.dislikes,
+      likesCount: video.likes.length,
+      dislikesCount: video.dislikes.length
+    });
   } catch (error) {
-    console.error('Like video error:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Like video error:', {
+      message: error.message,
+      stack: error.stack,
+      videoId: req.params.videoId,
+      userId: req.userId
+    });
+    res.status(500).json({ error: 'Server error', details: error.message });
   }
 };
 
 // Dislike a video
 export const dislikeVideo = async (req, res) => {
   try {
-    const video = await Video.findById(req.params.videoId);
+    const video = await Video.findOne({ videoId: req.params.videoId });
     if (!video) {
       return res.status(404).json({ error: 'Video not found' });
     }
     const userId = req.userId;
-    if (video.likes?.includes(userId)) {
-      video.likes?.pull(userId);
+    video.likes = video.likes || [];
+    video.dislikes = video.dislikes || [];
+    if (video.likes.includes(userId)) {
+      video.likes.pull(userId);
     }
-    if (!video.dislikes?.includes(userId)) {
-      video.dislikes?.push(userId);
+    if (!video.dislikes.includes(userId)) {
+      video.dislikes.push(userId);
     } else {
-      video.dislikes?.pull(userId);
+      video.dislikes.pull(userId);
     }
     await video.save();
-    res.json(video);
+    res.json({
+      videoId: video.videoId,
+      likes: video.likes,
+      dislikes: video.dislikes,
+      likesCount: video.likes.length,
+      dislikesCount: video.dislikes.length
+    });
   } catch (error) {
-    console.error('Dislike video error:', error);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Dislike video error:', {
+      message: error.message,
+      stack: error.stack,
+      videoId: req.params.videoId,
+      userId: req.userId
+    });
+    res.status(500).json({ error: 'Server error', details: error.message });
   }
 };
