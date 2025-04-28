@@ -23,7 +23,7 @@ router.delete('/:videoId', authMiddleware, deleteVideo);
 router.post('/:videoId/comments', authMiddleware, addComment);
 router.put('/:videoId/comments/:commentId', authMiddleware, editComment);
 router.delete('/:videoId/comments/:commentId', authMiddleware, deleteComment);
-router.post('/:videoId/like', authMiddleware, likeVideo);
-router.post('/:videoId/dislike', authMiddleware, dislikeVideo);
+router.put('/:videoId/like', authMiddleware, likeVideo);
+router.put('/:videoId/dislike', authMiddleware, dislikeVideo);
 
 export default router;
