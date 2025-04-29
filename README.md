@@ -1,5 +1,3 @@
-The **README.md** will document the backend’s purpose, setup, environment variables, scripts, and endpoints, making it easy to understand and maintain. It’s tailored to your MVC structure, GridFS video storage, and recent fixes (`createVideo`, `jwt-decode`, IP whitelisting).
-
 # YouTube Clone Backend
 
 This is the backend for a YouTube clone application, built with **Node.js**, **Express**, and **MongoDB Atlas**. It follows an MVC architecture, handling video uploads (using MongoDB GridFS for video file storage), user authentication, channel management, and video interactions (likes, comments, views). The backend provides APIs consumed by a React frontend.
@@ -351,50 +349,6 @@ Your frontend (in `client/`) is likely local (`http://localhost:5173`). Update i
 - **File**: `client/src/store/videoSlice.js`
   Replace `http://localhost:5000` with your Vercel URL:
 
-  ```javascript
-  export const fetchVideos = createAsyncThunk('videos/fetchVideos', async (_, { rejectWithValue }) => {
-    try {
-      const response = await axios.get('https://your-vercel-app.vercel.app/api/videos');
-      console.log('Fetched videos:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Fetch videos error:', error.response?.data);
-      return rejectWithValue(error.response?.data || 'Network error');
-    }
-  });
-
-  export const fetchVideo = createAsyncThunk('videos/fetchVideo', async (videoId) => {
-    const response = await axios.get(`https://your-vercel-app.vercel.app/api/videos/${videoId}`);
-    return response.data;
-  });
-
-  export const fetchChannel = createAsyncThunk('videos/fetchChannel', async (channelId, { getState }) => {
-    const { auth: { token } } = getState();
-    const response = await axios.get(`https://your-vercel-app.vercel.app/api/channels/${channelId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  });
-
-  export const createVideo = createAsyncThunk('videos/createVideo', async ({ title, description, channelId, videoFile }, { getState }) => {
-    const { auth: { token } } = getState();
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('description', description);
-    formData.append('channelId', channelId);
-    formData.append('video', videoFile);
-
-    const response = await axios.post('https://your-vercel-app.vercel.app/api/videos', formData, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-    return response.data;
-  });
-
-  // Update other thunks similarly...
-  ```
 
 - **Test Locally**:
   ```bash

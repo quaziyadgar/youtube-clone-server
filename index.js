@@ -12,24 +12,25 @@ dotenv.config();
 const app = express();
 
 // app.options('*', cors());
-app.use(cors({
-  origin: ['http://localhost:5173','https://youtube-clone-bice-pi.vercel.app/'],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://youtube-clone-bice-pi.vercel.app', // No trailing slash
+];
 
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', 'https://youtube-clone-bice-pi.vercel.app/');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  console.log(`${req.method} ${req.url} from ${req.headers.origin}`);
-  next();
-});
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 
 app.use(express.json());
 app.use('/api/videos', videoRoutes);
