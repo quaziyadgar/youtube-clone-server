@@ -407,4 +407,5 @@ Your frontend (in `client/`) is likely local (`http://localhost:5173`). Update i
    - Want to add **Subscriptions**, create a demo video, or finalize PDF requirements?
    - Any issues with video uploads or APIs?
 
-Please share your Vercel URL or any errors, and I’ll assist further! What’s next?
+GITHUB LINK - https://github.com/quaziyadgar/youtube-clone-server
+DEPLOYED LINK - https://vercel.com/quaziyadgars-projects/youtube-clone-server
