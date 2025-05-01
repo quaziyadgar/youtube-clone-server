@@ -8,6 +8,7 @@ const videoSchema = new mongoose.Schema({
   description: String,
   channelId: String,
   uploader: String,
+  views: Number,
   likes: [{
     type: String,
   }],
